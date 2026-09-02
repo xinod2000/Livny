@@ -1,1 +1,256 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Tektur", "IBM Plex Sans", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-ink-950: #0a0e13;
+  --color-ink-900: #0e131a;
+  --color-ink-850: #121923;
+  --color-ink-800: #161e29;
+  --color-ink-750: #1a2330;
+  --color-ink-700: #1f2a39;
+  --color-ink-600: #27354a;
+
+  --color-line: #2a3648;
+  --color-line-soft: #212c3c;
+
+  --color-tx: #e9eef5;
+  --color-tx-mut: #97a6b9;
+  --color-tx-dim: #62748c;
+
+  --color-amber: #f6a821;
+  --color-amber-hi: #ffc35c;
+  --color-grn: #3ecf7a;
+  --color-cy: #5fd7ff;
+  --color-red: #ff5d5d;
+  --color-steel: #8fa5bb;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-ink-900);
+  color: var(--color-tx);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── многослойный фон: чертёжная сетка + виньетка ─────────────────── */
+.bg-blueprint {
+  background-image:
+    radial-gradient(1100px 500px at 75% -5%, rgba(246, 168, 33, 0.06), transparent 60%),
+    radial-gradient(900px 600px at 0% 30%, rgba(95, 215, 255, 0.045), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(120, 145, 175, 0.05) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(90deg, rgba(120, 145, 175, 0.05) 0 1px, transparent 1px 48px),
+    linear-gradient(180deg, #0e131a 0%, #0b1016 100%);
+}
+
+.noise::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── панели в стиле шкафа автоматики ──────────────────────────────── */
+.panel {
+  background: linear-gradient(180deg, var(--color-ink-800), var(--color-ink-850));
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--color-line-soft);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-tx-dim);
+}
+
+/* уголки-рамки как на мнемосхемах */
+.frame-corners {
+  position: relative;
+}
+.frame-corners::before,
+.frame-corners::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--color-amber);
+  border-style: solid;
+  opacity: 0.75;
+}
+.frame-corners::before {
+  top: -1px; left: -1px;
+  border-width: 2px 0 0 2px;
+}
+.frame-corners::after {
+  bottom: -1px; right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+/* ── светодиоды ───────────────────────────────────────────────────── */
+.led {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: #33404f;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+  flex: none;
+}
+.led-grn { background: var(--color-grn); box-shadow: 0 0 8px rgba(62, 207, 122, 0.8); }
+.led-amber { background: var(--color-amber); box-shadow: 0 0 8px rgba(246, 168, 33, 0.8); }
+.led-red { background: var(--color-red); box-shadow: 0 0 10px rgba(255, 93, 93, 0.9); }
+.led-cy { background: var(--color-cy); box-shadow: 0 0 8px rgba(95, 215, 255, 0.8); }
+
+@keyframes ledblink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0.25; }
+}
+.led-blink { animation: ledblink 1s steps(1) infinite; }
+.led-blink-fast { animation: ledblink 0.5s steps(1) infinite; }
+
+/* ── кнопки HMI ───────────────────────────────────────────────────── */
+.btn-hmi {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: 5px;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(180deg, var(--color-ink-700), var(--color-ink-750));
+  color: var(--color-tx-mut);
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, color 0.15s, border-color 0.15s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 3px 0 rgba(0, 0, 0, 0.45);
+}
+.btn-hmi:hover { color: var(--color-tx); border-color: var(--color-ink-600); }
+.btn-hmi:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45); }
+
+.btn-start {
+  color: #0c2417;
+  background: linear-gradient(180deg, #55e094, #2fb868);
+  border-color: #2aa25c;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.btn-start:hover { color: #06180e; border-color: #55e094; box-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 18px rgba(62, 207, 122, 0.35); }
+.btn-stop {
+  color: #fff;
+  background: linear-gradient(180deg, #ff7676, #d94444);
+  border-color: #b23636;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+.btn-stop:hover { border-color: #ff9c9c; box-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 18px rgba(255, 93, 93, 0.35); }
+
+.seg {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-line);
+  color: var(--color-tx-dim);
+  background: var(--color-ink-850);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+.seg:hover { color: var(--color-tx-mut); }
+.seg-on {
+  color: #12202b;
+  background: var(--color-cy);
+  border-color: var(--color-cy);
+  font-weight: 600;
+}
+
+/* ── цифровой индикатор ───────────────────────────────────────────── */
+.digits {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 22px rgba(95, 215, 255, 0.35);
+}
+.digits-amber { text-shadow: 0 0 22px rgba(246, 168, 33, 0.35); }
+
+/* ── появление при прокрутке ──────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── код ──────────────────────────────────────────────────────────── */
+.code-scroll::-webkit-scrollbar { height: 10px; width: 10px; }
+.code-scroll::-webkit-scrollbar-track { background: var(--color-ink-950); }
+.code-scroll::-webkit-scrollbar-thumb { background: var(--color-ink-600); border-radius: 5px; }
+.code-scroll::-webkit-scrollbar-thumb:hover { background: var(--color-line); }
+
+/* ── анимации мнемосхемы ──────────────────────────────────────────── */
+@keyframes auger-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.auger-spin {
+  animation: auger-spin 0.5s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.auger-spin-slow {
+  animation: auger-spin 0.9s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes stream-flow {
+  to { stroke-dashoffset: -26; }
+}
+.stream {
+  stroke-dasharray: 5 8;
+  animation: stream-flow 0.35s linear infinite;
+}
+
+@keyframes lamp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.lamp-pulse { animation: lamp-pulse 1.1s ease-in-out infinite; }
+
+@keyframes conveyor {
+  to { stroke-dashoffset: -60; }
+}
+.conveyor-line {
+  stroke-dasharray: 12 18;
+  animation: conveyor 1.4s linear infinite;
+}
+
+/* маркиза статуса */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: ticker 36s linear infinite;
+  width: max-content;
+}
+
+::selection {
+  background: rgba(246, 168, 33, 0.35);
+}
