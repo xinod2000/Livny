@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { stFiles, totalLines } from "../data/project";
+import { downloadText, stFiles, totalLines } from "../data/project";
 import { KindIcon, Reveal } from "./ui";
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -150,13 +150,12 @@ export default function CodeBrowser() {
               >
                 {copied ? "✓ Скопировано" : "Копировать"}
               </button>
-              <a
-                href={`${import.meta.env.BASE_URL}Livny/${file.name}`}
-                download
+              <button
+                onClick={() => downloadText(file.name, file.code)}
                 className="rounded-sm border border-amber/50 bg-amber/10 px-2.5 py-1 font-mono text-[10.5px] tracking-wide text-amber-hi transition-colors hover:bg-amber/20"
               >
-                Скачать .st
-              </a>
+                Скачать {file.name.endsWith(".md") ? ".md" : ".st"}
+              </button>
             </div>
           </div>
 

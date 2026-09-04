@@ -1,12 +1,27 @@
-import st01 from "../../public/Livny/01_DUT_Types.st?raw";
-import st02 from "../../public/Livny/02_GVL_Global.st?raw";
-import st03 from "../../public/Livny/03_FB_InputHandler.st?raw";
-import st04 from "../../public/Livny/04_FB_WeightChannel.st?raw";
-import st05 from "../../public/Livny/05_FB_DoserControl.st?raw";
-import st06 from "../../public/Livny/06_FB_AlarmManager.st?raw";
-import st07 from "../../public/Livny/07_PRG_Main.st?raw";
-import st08 from "../../public/Livny/08_PRG_HMI.st?raw";
-import readme from "../../public/Livny/README.txt?raw";
+/* Исходники подтягиваются прямо из корня репозитория Livny —
+   сайт всегда показывает актуальную версию файлов. */
+import st01 from "../../01_DUT_Types.st?raw";
+import st02 from "../../02_GVL_Global.st?raw";
+import st03 from "../../03_FB_InputHandler.st?raw";
+import st04 from "../../04_FB_WeightChannel.st?raw";
+import st05 from "../../05_FB_DoserControl.st?raw";
+import st06 from "../../06_FB_AlarmManager.st?raw";
+import st07 from "../../07_PRG_Main.st?raw";
+import st08 from "../../08_PRG_HMI.st?raw";
+import readme from "../../README.md?raw";
+
+/* Скачивание файла напрямую из содержимого репозитория */
+export function downloadText(name: string, text: string) {
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+}
 
 export type FileKind = "DUT" | "GVL" | "FB" | "PRG" | "DOC";
 
@@ -19,6 +34,13 @@ export interface StFile {
 }
 
 export const stFiles: StFile[] = [
+  {
+    name: "README.md",
+    kind: "DOC",
+    title: "README · паспорт проекта",
+    desc: "Описание репозитория: состав, алгоритм, таблица связки переменных с модулями, задачи, пусконаладка.",
+    code: readme,
+  },
   {
     name: "01_DUT_Types.st",
     kind: "DUT",

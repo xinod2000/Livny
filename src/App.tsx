@@ -7,7 +7,7 @@ import {
   IoSection,
 } from "./components/Sections";
 import { Led, Reveal, ScaleMark, SectionHead } from "./components/ui";
-import { stFiles } from "./data/project";
+import { downloadText, stFiles } from "./data/project";
 
 const NAV = [
   ["#mimic", "Мнемосхема"],
@@ -138,17 +138,18 @@ function Footer() {
           </p>
         </div>
         <div>
-          <div className="font-mono text-[10px] tracking-[0.2em] text-tx-dim uppercase">Состав репозитория Livny</div>
+          <div className="font-mono text-[10px] tracking-[0.2em] text-tx-dim uppercase">
+            Корень репозитория Livny · скачать
+          </div>
           <ul className="mt-3 grid grid-cols-1 gap-1.5">
             {stFiles.map((f) => (
               <li key={f.name}>
-                <a
-                  href={`${import.meta.env.BASE_URL}Livny/${f.name}`}
-                  download
+                <button
+                  onClick={() => downloadText(f.name, f.code)}
                   className="font-mono text-[11.5px] text-tx-mut transition-colors hover:text-amber-hi"
                 >
                   ↓ {f.name}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
